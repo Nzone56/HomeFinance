@@ -1,0 +1,12 @@
+-- Take `public.rls_auto_enable()` off the REST surface.
+--
+-- The function is an event-trigger helper that enables Row Level Security on
+-- any table created in `public`. It is not part of this application's schema —
+-- it arrived with the project — but it sits in `public` as SECURITY DEFINER,
+-- so PostgREST advertises it at /rest/v1/rpc/rls_auto_enable to anonymous and
+-- signed-in callers alike.
+--
+-- An event-trigger function is invoked by the server, never through a role's
+-- EXECUTE privilege, so revoking that privilege takes it off the API without
+-- stopping it from doing its job.
+revoke all on function public.rls_auto_enable() from public, anon, authenticated;

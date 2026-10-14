@@ -16,6 +16,16 @@ const eslintConfig = [
       "@typescript-eslint/no-explicit-any": "error",
       "@typescript-eslint/consistent-type-imports": ["error", { prefer: "type-imports" }],
       "no-console": ["error", { allow: ["warn", "error"] }],
+      // A leading underscore marks a binding that exists only to satisfy a
+      // signature — an action's previous state, say.
+      "@typescript-eslint/no-unused-vars": [
+        "error",
+        {
+          argsIgnorePattern: "^_",
+          varsIgnorePattern: "^_",
+          caughtErrorsIgnorePattern: "^_",
+        },
+      ],
     },
   },
   {
