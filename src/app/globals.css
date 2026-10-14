@@ -1,26 +1,316 @@
 @import "tailwindcss";
+@import "tw-animate-css";
+@import "shadcn/tailwind.css";
 
-:root {
-  --background: #ffffff;
-  --foreground: #171717;
-}
+@custom-variant dark (&:is(.dark *));
 
 @theme inline {
   --color-background: var(--background);
   --color-foreground: var(--foreground);
-  --font-sans: var(--font-geist-sans);
+  --font-sans: var(--font-sans);
   --font-mono: var(--font-geist-mono);
+  --font-heading: var(--font-sans);
+  --color-sidebar-ring: var(--sidebar-ring);
+  --color-sidebar-border: var(--sidebar-border);
+  --color-sidebar-accent-foreground: var(--sidebar-accent-foreground);
+  --color-sidebar-accent: var(--sidebar-accent);
+  --color-sidebar-primary-foreground: var(--sidebar-primary-foreground);
+  --color-sidebar-primary: var(--sidebar-primary);
+  --color-sidebar-foreground: var(--sidebar-foreground);
+  --color-sidebar: var(--sidebar);
+  --color-chart-5: var(--chart-5);
+  --color-chart-4: var(--chart-4);
+  --color-chart-3: var(--chart-3);
+  --color-chart-2: var(--chart-2);
+  --color-chart-1: var(--chart-1);
+  --color-status-good: var(--status-good);
+  --color-status-warning: var(--status-warning);
+  --color-status-critical: var(--status-critical);
+  --color-chart-grid: var(--chart-grid);
+  --color-chart-axis: var(--chart-axis);
+  --color-ring: var(--ring);
+  --color-input: var(--input);
+  --color-border: var(--border);
+  --color-destructive: var(--destructive);
+  --color-accent-foreground: var(--accent-foreground);
+  --color-accent: var(--accent);
+  --color-muted-foreground: var(--muted-foreground);
+  --color-muted: var(--muted);
+  --color-secondary-foreground: var(--secondary-foreground);
+  --color-secondary: var(--secondary);
+  --color-primary-foreground: var(--primary-foreground);
+  --color-primary: var(--primary);
+  --color-popover-foreground: var(--popover-foreground);
+  --color-popover: var(--popover);
+  --color-card-foreground: var(--card-foreground);
+  --color-card: var(--card);
+  --radius-sm: calc(var(--radius) * 0.6);
+  --radius-md: calc(var(--radius) * 0.8);
+  --radius-lg: var(--radius);
+  --radius-xl: calc(var(--radius) * 1.4);
+  --radius-2xl: calc(var(--radius) * 1.8);
+  --radius-3xl: calc(var(--radius) * 2.2);
+  --radius-4xl: calc(var(--radius) * 2.6);
 }
 
-@media (prefers-color-scheme: dark) {
-  :root {
-    --background: #0a0a0a;
-    --foreground: #ededed;
+:root {
+  --background: oklch(1 0 0);
+  --foreground: oklch(0.145 0 0);
+  --card: oklch(1 0 0);
+  --card-foreground: oklch(0.145 0 0);
+  --popover: oklch(1 0 0);
+  --popover-foreground: oklch(0.145 0 0);
+  --primary: oklch(0.205 0 0);
+  --primary-foreground: oklch(0.985 0 0);
+  --secondary: oklch(0.97 0 0);
+  --secondary-foreground: oklch(0.205 0 0);
+  --muted: oklch(0.97 0 0);
+  --muted-foreground: oklch(0.556 0 0);
+  --accent: oklch(0.97 0 0);
+  --accent-foreground: oklch(0.205 0 0);
+  --destructive: oklch(0.577 0.245 27.325);
+  --border: oklch(0.922 0 0);
+  --input: oklch(0.922 0 0);
+  --ring: oklch(0.708 0 0);
+  /*
+   * Categorical series colours, in fixed slot order — a series keeps its slot
+   * no matter how many are on screen, so filtering never repaints the
+   * survivors. Validated against the light card surface (#ffffff): lightness
+   * band, chroma floor, colour-blind separation and normal-vision separation
+   * all pass on every pair. Aqua sits below 3:1 contrast on white, which is why
+   * every chart here carries direct labels rather than relying on colour alone.
+   */
+  --chart-1: #2a78d6; /* blue */
+  --chart-2: #eb6834; /* orange */
+  --chart-3: #1baf7a; /* aqua */
+  --chart-4: #eda100; /* yellow */
+  --chart-5: #4a3aa7; /* violet */
+
+  /*
+   * Status colours are reserved: they mean a state, never a series. They always
+   * ship beside a label or an icon, never as the only signal.
+   */
+  --status-good: #0ca30c;
+  --status-warning: #fab219;
+  --status-critical: #d03b3b;
+
+  /* Chart chrome: recessive by design — the data is the only loud thing. */
+  --chart-grid: #e1e0d9;
+  --chart-axis: #c3c2b7;
+
+  --radius: 0.625rem;
+  --sidebar: oklch(0.985 0 0);
+  --sidebar-foreground: oklch(0.145 0 0);
+  --sidebar-primary: oklch(0.205 0 0);
+  --sidebar-primary-foreground: oklch(0.985 0 0);
+  --sidebar-accent: oklch(0.97 0 0);
+  --sidebar-accent-foreground: oklch(0.205 0 0);
+  --sidebar-border: oklch(0.922 0 0);
+  --sidebar-ring: oklch(0.708 0 0);
+}
+
+.dark {
+  --background: oklch(0.145 0 0);
+  --foreground: oklch(0.985 0 0);
+  --card: oklch(0.205 0 0);
+  --card-foreground: oklch(0.985 0 0);
+  --popover: oklch(0.205 0 0);
+  --popover-foreground: oklch(0.985 0 0);
+  --primary: oklch(0.922 0 0);
+  --primary-foreground: oklch(0.205 0 0);
+  --secondary: oklch(0.269 0 0);
+  --secondary-foreground: oklch(0.985 0 0);
+  --muted: oklch(0.269 0 0);
+  --muted-foreground: oklch(0.708 0 0);
+  --accent: oklch(0.269 0 0);
+  --accent-foreground: oklch(0.985 0 0);
+  --destructive: oklch(0.704 0.191 22.216);
+  --border: oklch(1 0 0 / 10%);
+  --input: oklch(1 0 0 / 15%);
+  --ring: oklch(0.556 0 0);
+  /*
+   * The same eight hues re-stepped for the dark card surface (#171717) — a
+   * selected palette, not an automatic flip of the light one. Validated against
+   * that surface; here all three clear 3:1 as well.
+   */
+  --chart-1: #3987e5;
+  --chart-2: #d95926;
+  --chart-3: #199e70;
+  --chart-4: #c98500;
+  --chart-5: #9085e9;
+
+  --chart-grid: #2c2c2a;
+  --chart-axis: #383835;
+
+  --sidebar: oklch(0.205 0 0);
+  --sidebar-foreground: oklch(0.985 0 0);
+  --sidebar-primary: oklch(0.488 0.243 264.376);
+  --sidebar-primary-foreground: oklch(0.985 0 0);
+  --sidebar-accent: oklch(0.269 0 0);
+  --sidebar-accent-foreground: oklch(0.985 0 0);
+  --sidebar-border: oklch(1 0 0 / 10%);
+  --sidebar-ring: oklch(0.556 0 0);
+}
+
+@layer base {
+  * {
+    @apply border-border outline-ring/50;
+  }
+  body {
+    @apply bg-background text-foreground;
+  }
+  html {
+    @apply font-sans;
+  }
+}
+/* Keeps the mobile tab bar clear of the iOS home indicator. */
+@utility pb-safe {
+  padding-bottom: env(safe-area-inset-bottom);
+}
+
+/*
+ * Content arrives rather than snapping in.
+ *
+ * One keyframe for the whole app, offset per item through `--appear-delay` so a
+ * list reads top to bottom instead of landing all at once. `both` holds the
+ * opening frame, which is what stops a delayed item flashing at full opacity
+ * before its turn.
+ */
+@keyframes appear {
+  from {
+    opacity: 0;
+    transform: translateY(0.5rem);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
   }
 }
 
-body {
-  background: var(--background);
-  color: var(--foreground);
-  font-family: Arial, Helvetica, sans-serif;
+@utility appear {
+  animation: appear 380ms cubic-bezier(0.22, 1, 0.36, 1) both;
+}
+
+/*
+ * The desktop dialog's entrance: the same keyframe, quicker.
+ *
+ * It replaces the vendored `zoom-in-95`, whose keyframe scales the panel and
+ * animates `filter` too. Scaling a panel full of text and fields re-rasterizes
+ * all of it on every frame, so on a large desktop viewport the frame arrived
+ * first and its contents visibly after. Opacity and a short translate are
+ * composited without repainting anything. As an `animate-*` token it replaces
+ * `animate-in` through the class merge instead of fighting it.
+ */
+@theme {
+  --animate-dialog-in: appear 160ms cubic-bezier(0.22, 1, 0.36, 1) both;
+  /* The app's content width, as `max-w-app`: 1200px, so the dashboard's
+     two-column cards have room on a desktop. No built-in step lands there. */
+  --container-app: 75rem;
+}
+
+/*
+ * The desktop dialog's scrim neither blurs nor fades.
+ *
+ * `backdrop-filter` re-blurs everything behind it on every frame, and behind a
+ * desktop dialog that is the whole screen — several times the pixels of a
+ * phone, which is why only desktop felt slow. A plain dim separates the panel
+ * just as clearly at none of the cost. Unlayered, so it wins over the vendored
+ * utilities without editing `components/ui`. The mobile sheet keeps its own.
+ */
+[data-slot="dialog-overlay"] {
+  backdrop-filter: none;
+  background-color: color-mix(in oklab, black 30%, transparent);
+  animation: none;
+}
+
+/*
+ * The same arrival, staggered across a container's own children.
+ *
+ * Done in CSS with nth-child rather than by handing every component a delay
+ * prop: the stagger belongs to the list, not to the things in it, and no
+ * component has to know it is being animated. The offset stops at the eighth
+ * item — a row below the fold gains nothing from waiting its turn.
+ */
+@utility appear-children {
+  & > * {
+    animation: appear 380ms cubic-bezier(0.22, 1, 0.36, 1) both;
+  }
+  & > *:nth-child(2) {
+    animation-delay: 45ms;
+  }
+  & > *:nth-child(3) {
+    animation-delay: 90ms;
+  }
+  & > *:nth-child(4) {
+    animation-delay: 135ms;
+  }
+  & > *:nth-child(5) {
+    animation-delay: 180ms;
+  }
+  & > *:nth-child(6) {
+    animation-delay: 225ms;
+  }
+  & > *:nth-child(7) {
+    animation-delay: 270ms;
+  }
+  & > *:nth-child(n + 8) {
+    animation-delay: 315ms;
+  }
+}
+
+/*
+ * Anyone who has asked their system for less motion gets none of it — and this
+ * covers every animation in the app, including the ones Radix and sonner bring
+ * with them, rather than only the class above.
+ */
+@media (prefers-reduced-motion: reduce) {
+  *,
+  *::before,
+  *::after {
+    animation-duration: 0.01ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: 0.01ms !important;
+    scroll-behavior: auto !important;
+  }
+}
+
+/*
+ * Anything you can click says so.
+ *
+ * Tailwind v4's Preflight sets `cursor: default` on buttons, so every button,
+ * switch, tab and menu item in the app lost its pointer. Rather than sprinkling
+ * `cursor-pointer` on each one — where it is one forgotten class away from
+ * being wrong again — the rule lives here once and covers anything that
+ * behaves like a control, including the Radix primitives that render a `div`
+ * with a role.
+ */
+@layer base {
+  button,
+  summary,
+  label[for],
+  a[href],
+  [role="button"],
+  [role="tab"],
+  [role="switch"],
+  [role="menuitem"],
+  [role="menuitemcheckbox"],
+  [role="menuitemradio"],
+  [role="option"],
+  [role="combobox"],
+  [role="link"] {
+    cursor: pointer;
+  }
+
+  /* A control that cannot be used should not invite the click. */
+  button:disabled,
+  [aria-disabled="true"],
+  [data-disabled] {
+    cursor: not-allowed;
+  }
+
+  /* Text inputs keep the caret; a date or colour picker is a control. */
+  input:not([type="checkbox"]):not([type="radio"]):not([type="range"]),
+  textarea {
+    cursor: auto;
+  }
 }
