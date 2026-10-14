@@ -449,6 +449,14 @@ Rules:
 Vercel free tier. No long-running processes, no background workers, no custom
 server, no in-memory state. Supabase owns data, auth and realtime.
 
+CI runs the same gate as `npm run verify` on every pull request and on pushes
+to `master` and `develop` (`.github/workflows/ci.yml`). The build gets
+placeholder Supabase variables unless the repository sets its own: the anon key
+grants nothing without a session, and CI never talks to the real project.
+`cd.yml` runs that same workflow on `master` and then asks Vercel to deploy
+through a deploy hook (`VERCEL_DEPLOY_HOOK_URL`), rather than building a second
+time with a token. With no hook set it says so and passes.
+
 PWA: `app/manifest.ts` plus a ~50-line service worker that caches **static
 assets only**. Financial data is never cached — a stale balance on one device
 would be worse than no app. Icons are generated from `public/icons/icon.svg` by

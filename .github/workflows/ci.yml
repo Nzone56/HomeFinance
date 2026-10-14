@@ -1,0 +1,45 @@
+# The same gate as `npm run verify` locally: typecheck, lint, tests at 100%
+# coverage, then a production build. One job, because the steps are cheap and a
+# shared `npm ci` costs less than fanning them out.
+name: CI
+
+on:
+  pull_request:
+  push:
+    branches: [master, develop]
+  # So the deploy workflow can run this exact gate before shipping.
+  workflow_call:
+
+# A new push to the same branch makes the previous run pointless.
+concurrency:
+  group: ci-${{ github.ref }}
+  cancel-in-progress: true
+
+jobs:
+  verify:
+    name: Verify
+    runs-on: ubuntu-latest
+    timeout-minutes: 15
+
+    steps:
+      - name: Check out the branch
+        uses: actions/checkout@v4
+
+      - name: Set up Node
+        uses: actions/setup-node@v4
+        with:
+          node-version-file: .nvmrc
+          cache: npm
+
+      - name: Install dependencies
+        run: npm ci
+
+      - name: Typecheck, lint, test and build
+        run: npm run verify
+        env:
+          # The build only needs these to be present. CI never talks to the real
+          # project: the anon key grants nothing on its own — Row Level Security
+          # is the authorization boundary — so placeholders keep every pull
+          # request building even without repository secrets.
+          NEXT_PUBLIC_SUPABASE_URL: ${{ secrets.NEXT_PUBLIC_SUPABASE_URL || 'https://placeholder.supabase.co' }}
+          NEXT_PUBLIC_SUPABASE_ANON_KEY: ${{ secrets.NEXT_PUBLIC_SUPABASE_ANON_KEY || 'placeholder-anon-key' }}
