@@ -74,6 +74,42 @@ describe("ActionForm", () => {
     expect(screen.getByLabelText("Nombre")).toHaveValue("Julián");
   });
 
+  it("keeps the saved value on screen instead of flashing the old one (regression)", async () => {
+    // Renaming the household put the old name back the moment the save
+    // succeeded, until the reload arrived 440ms later: React resets an
+    // uncontrolled form once its action resolves.
+    render(
+      <ActionForm action={async () => successState("Casa actualizada.")}>
+        {(fields) => <TextField label="Nombre" {...fields("name", "Pachas house")} />}
+      </ActionForm>,
+    );
+
+    const field = screen.getByLabelText("Nombre");
+    await userEvent.clear(field);
+    await userEvent.type(field, "Casa nueva");
+    await userEvent.click(screen.getByRole("button", { name: content.common.save }));
+
+    await waitFor(() => expect(toast.success).toHaveBeenCalled());
+    expect(screen.getByLabelText("Nombre")).toHaveValue("Casa nueva");
+  });
+
+  it("disables the button while the save is on its way", async () => {
+    let settle = (_state: ActionState) => {};
+    renderForm(
+      () =>
+        new Promise<ActionState>((resolve) => {
+          settle = resolve;
+        }),
+    );
+
+    await userEvent.click(screen.getByRole("button", { name: content.common.save }));
+
+    expect(await screen.findByRole("button", { name: content.common.saving })).toBeDisabled();
+
+    settle(successState("Listo"));
+    await waitFor(() => expect(toast.success).toHaveBeenCalled());
+  });
+
   it("takes a custom submit label", () => {
     render(
       <ActionForm action={async () => successState("Listo")} submitLabel="Actualizar">

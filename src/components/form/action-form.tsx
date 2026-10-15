@@ -1,6 +1,6 @@
 "use client";
 
-import { useActionState, type ReactNode } from "react";
+import { startTransition, useActionState, type FormEvent, type ReactNode } from "react";
 
 import { ActionFeedback } from "@/components/form/action-feedback";
 import { SubmitButton } from "@/components/form/submit-button";
@@ -32,6 +32,12 @@ interface ActionFormProps {
  *
  * Used directly for the settings forms that live on the page; `ActionSheet`
  * wraps this same pattern in a drawer for the create forms.
+ *
+ * Dispatched from `onSubmit`, never `<form action>`, for the same reason
+ * `ActionSheet` is: React resets a form once its action resolves, putting every
+ * field back to the value it mounted with. Renaming the household showed the
+ * save succeed and the field snap back to the old name for the length of the
+ * reload — measured at 440ms — before the new name arrived.
  */
 export function ActionForm({
   action,
@@ -40,13 +46,19 @@ export function ActionForm({
   className,
   footerClassName,
 }: ActionFormProps) {
-  const [state, formAction] = useActionState(action, IDLE_STATE);
+  const [state, formAction, isPending] = useActionState(action, IDLE_STATE);
+
+  function handleSubmit(event: FormEvent<HTMLFormElement>) {
+    event.preventDefault();
+    const formData = new FormData(event.currentTarget);
+    startTransition(() => formAction(formData));
+  }
 
   return (
-    <form action={formAction} className={cn("grid gap-4", className)} noValidate>
+    <form onSubmit={handleSubmit} className={cn("grid gap-4", className)} noValidate>
       {children(createFieldProps(state))}
       <div className={cn("flex justify-end", footerClassName)}>
-        <SubmitButton label={submitLabel} />
+        <SubmitButton label={submitLabel} pending={isPending} />
       </div>
       <ActionFeedback state={state} />
     </form>
