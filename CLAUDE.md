@@ -286,14 +286,18 @@ the full principal, because the bank charged all of it at once.
 - **Do not submit a form programmatically to fire an action.** It fires twice.
   Build `FormData` and call the action inside `startTransition` — see
   `ExpenseActiveToggle`, which was the bug that taught us this.
-- **`ActionSheet` dispatches from `onSubmit`, never `<form action>`.** React
-  resets a form after a form action finishes — a rejected one too — and Radix's
-  Select and Switch answer that reset by snapping back to the value they
-  mounted with. A failed save silently reverted every dropdown and toggle while
-  the text fields came back, which read as "it erased some lines". Build
+- **Forms dispatch from `onSubmit`, never `<form action>`** — `ActionForm` and
+  `ActionSheet` both. React resets a form after a form action finishes, a
+  rejected one included, and every field goes back to the value it mounted
+  with. In the sheet, Radix's Select and Switch answered that reset by
+  reverting every dropdown and toggle on a failed save, which read as "it
+  erased some lines". In the inline form, a *successful* rename put the old
+  name back the moment it saved and left it there for the whole reload —
+  measured at 440ms — which read as the save not having worked. Build
   `FormData` in `onSubmit`, call the action in `startTransition`, and pass
-  `useActionState`'s pending flag to `SubmitButton`. A rejection focuses the
-  first `aria-invalid` field so its message is in view, not above the fold.
+  `useActionState`'s pending flag to `SubmitButton`. In the sheet a rejection
+  also focuses the first `aria-invalid` field, so its message is in view rather
+  than above the fold.
 - Field names mirror database columns, so a parsed schema can go straight to an
   insert with no mapping layer.
 - URL owns view state: the selected month is `?month=yyyy-MM`, read on the
